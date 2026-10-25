@@ -158,7 +158,7 @@ class DeviceConfigPropertiesService(SecureAPIService):
         device = get_device_by_domain_check_update(domain, dev_id)
 
         endpoint = getattr(self, f"get_ip_{device.mode}")()
-
+        port = int(os.environ["MQP_PORT"])
         key, crt, ca = Pem.parse(device.cert)
         key = b64encode(key.as_bytes()).decode()
         crt = b64encode(crt.as_bytes()).decode()
@@ -169,7 +169,7 @@ class DeviceConfigPropertiesService(SecureAPIService):
         config.update(extras)
         config["task.heartbeat"] = "10"
         config["task.concurrent"] = "true"
-        config["event"] = f"mqtts://${{device_id}}:{device.domain}.{device.token_id}@{endpoint}/device/${{device_id}}/event?command=device/${{device_id}}/command&will=device/${{device_id}}/event&ca={ca}&key={key}&cert={crt}&qos=2&qsize=8192&keepalive=180&max_inflight_messages=20&session_expiry_interval=600&clean_start=false&encode=msgpack/zstd"
+        config["event"] = f"mqtts://${{device_id}}:{device.domain}.{device.token_id}@{endpoint}:{port}/device/${{device_id}}/event?command=device/${{device_id}}/command&will=device/${{device_id}}/event&ca={ca}&key={key}&cert={crt}&qos=2&qsize=8192&keepalive=180&max_inflight_messages=20&session_expiry_interval=600&clean_start=false&encode=msgpack/zstd"
         config["cert"] = b64encode(device.cert.encode()).decode()
         config["port"] = str(random.randint(20000, 60000))
         return dict(properties=config)

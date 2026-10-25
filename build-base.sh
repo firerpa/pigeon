@@ -74,7 +74,7 @@ pushd $(pwd)
 cd mosquitto-auth-plug-0.1.3; make -j8 || true
 popd
 
-cp -pr mosquitto-2.1.2/src/mosquitto /usr/sbin
+cp -pr mosquitto-2.1.2/src/mosquitto /usr/sbin/mosquitto-broker
 cp -pr mosquitto-2.1.2/client/mosquitto_* /usr/bin
 
 cp -pr mosquitto-auth-plug-0.1.3/auth-plug.so /usr/lib/mosquitto-auth-plug.so

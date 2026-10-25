@@ -150,7 +150,7 @@ const onChangePwdOpenChange = (open: boolean) => {
     <!-- Logo -->
     <div class="flex items-center gap-2.5 px-2 py-4">
       <div class="flex w-full items-center gap-2">
-        <img src="/logo.svg" alt="FIRERPA" width="32" height="32" class="shrink-0 rounded-md" />
+        <img src="/logo.svg" alt="Pigeon" width="32" height="32" class="shrink-0 rounded-md" />
         <div class="flex-1 min-w-0">
           <div class="flex items-baseline gap-0.5">
             <span class="brand-rounded text-sm font-bold text-foreground">FIRERPA</span>

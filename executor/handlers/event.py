@@ -437,8 +437,8 @@ def event_handle_HELO(session, data):
     prev = d.state
     info = data["data"]
     d.dev_id        = data["device_id"]
-    d.serialno      = data.get("serialno", None)
-    d.privileged    = data.get("privileged", True)
+    d.serialno      = info.get("serialno", None)
+    d.privileged    = info.get("privileged", True)
     d.board         = info["board"]
     d.hardware      = info["hardware"]
     d.brand         = info["brand"]
@@ -474,26 +474,6 @@ def event_handle_BYE(session, data):
     if prev != DeviceState.OFFLINE.value:
         create_device_activity(session, d, "device.offline", ActivitySeverity.WARNING.value,
                                                         dict(domain=d.domain))
-
-
-def event_handle_CLOUD_HELO(session, data):
-    d = session.query(Device).filter(Device.dev_id==data["device_id"]).first()
-    info = data["data"]
-    d.top_ip        = info["top_ip"]
-    d.vpn_ip        = info["vpn_ip"]
-    d.default_ip    = info["default_ip"]
-    d.service_port  = (d.service_port, info["service_port"])[d.mode!=DeviceMode.FORWARD.value]
-    update_public_ip_info(d, info.get("public_ip"))
-    d.locked        = info["locked"]
-    d.api_available = info["api_available"]
-    d.frida_token         = info["frida"]
-    d.lock_token          = info["lock"]
-    d.controlling   = bool(info["controlling"])
-    d.controlling_cid = info["controlling"]
-    host = host_from_mode(d)
-    set_gateway(d, host, d.service_port)
-    save_cert(certdir, d.domain, d.cert)
-    session.flush()
 
 
 def event_handle_CONTROL_ENTER(session, data):
@@ -784,7 +764,6 @@ def cb_task_status_prepared_imp(session, dt):
         return False
     task_id = new_id or task_id
     task["params"] = params
-    task["args"] = params
     task["task_id"] = task_id
 
     execution = dict()
@@ -859,7 +838,8 @@ def event_handle_TASK_LOAD(session, data):
     ok = data["data"]["loaded"] != False
     state = (DeviceJobState.SCRIPT_LOAD_FAILED.value, DeviceJobState.PREPARED.value)[ok]
     dt.state = state
-    dt.error = None if ok else data["data"].get("error")
+    err = data["data"].get("error")
+    dt.error = None if ok else (err.get("traceback") if isinstance(err, dict) else err)
     dt.last_state_update_time = data["received"]
     session.flush()
 

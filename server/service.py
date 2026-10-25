@@ -791,8 +791,9 @@ class PlatformDeviceHandler(BaseHttpService):
         key = b64encode(key.as_bytes()).decode()
         crt = b64encode(crt.as_bytes()).decode()
         ca  = b64encode(ca .as_bytes()).decode()
+        port = int(os.environ["MQP_PORT"])
         cfg["port"] = str(random.randint(40000, 60000))
-        cfg["event"] = f"mqtts://{did}:{domain}.{token}@{server}/{evt}?command={cmd}&will={evt}&ca={ca}&key={key}&cert={crt}&qos=2&qsize=8192&keepalive=180&max_inflight_messages=20&session_expiry_interval=600&clean_start=false&encode=msgpack/zstd"
+        cfg["event"] = f"mqtts://{did}:{domain}.{token}@{server}{port}/{evt}?command={cmd}&will={evt}&ca={ca}&key={key}&cert={crt}&qos=2&qsize=8192&keepalive=180&max_inflight_messages=20&session_expiry_interval=600&clean_start=false&encode=msgpack/zstd"
         cfg["cert"] = b64encode(cert).decode()
         cfg["ssl-web-credential"] = self.get_super_key(domain)
         cfg["task.concurrent"] = "true"

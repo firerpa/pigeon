@@ -36,7 +36,7 @@ compile              config.py
 popd
 
 cp -pr pgbouncer.ini /etc
-cp -pr mosquitto.conf /etc/mosquitto.conf
+cp -pr mosquitto.sh /usr/local/bin
 cp -pr frps.sh /usr/local/bin
 
 cat <<EOL >/etc/supervisord.conf
@@ -64,7 +64,7 @@ user=root
 [program:server]
 numprocs                = 4
 process_name            = %(program_name)s-%(process_num)s
-command                 = python3 -u -m server --port=880%(process_num)s
+command                 = python3 -u -m server --port=5880%(process_num)s
 autostart               = true
 autorestart             = true
 redirect_stderr         = true
@@ -136,11 +136,11 @@ startretries            = 10000
 priority                = 100
 
 [program:mosquitto]
-command                 = mosquitto -c /etc/mosquitto.conf
+command                 = /usr/local/bin/mosquitto.sh
 autostart               = true
 autorestart             = true
 redirect_stderr         = true
-stdout_logfile          = /dev/null
+stdout_logfile          = /dev/stdout
 stdout_logfile_maxbytes = 0
 stdout_logfile_backups  = 0
 startsecs               = 10

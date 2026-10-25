@@ -1,8 +1,11 @@
+#!/bin/sh
+cat <<EOL >/etc/mosquitto.conf
+
 user mosquitto
 
 listener 0 /run/mosquitto/server.sock
 
-listener 8883
+listener ${MQP_PORT:?MQP_PORT variable is not set}
 socket_domain ipv4
 
 cafile /user/root.crt
@@ -44,3 +47,6 @@ log_timestamp true
 
 auth_opt_http_ip 127.0.0.1
 auth_opt_http_port 8123
+EOL
+
+exec mosquitto-broker -c /etc/mosquitto.conf

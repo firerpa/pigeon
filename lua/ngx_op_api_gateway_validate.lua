@@ -3,7 +3,7 @@ local http = require "resty.http"
 local requ = http.new()
 
 -- check authorization from local service
-local ok, err = requ:connect("127.0.0.1", 8800)
+local ok, err = requ:connect("127.0.0.1", 58800)
 if not ok then
         ngx.exit(500)
 end

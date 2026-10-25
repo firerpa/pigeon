@@ -128,8 +128,6 @@ class EventConnectionService(object):
         self.dispatch(data["device_id"], "BYE", data)
     def handle_HELO(self, data):
         self.dispatch(data["device_id"], "HELO", data)
-        # get base information when client connected
-        self.mq_send_command(data["device_id"], "cloud/helo", None)
     def handle_CLOUD_HELO(self, data):
         self.dispatch(data["device_id"], "CLOUD_HELO", data)
     def handle_CONTROL_ENTER(self, data):
